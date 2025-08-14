@@ -1,10 +1,16 @@
 #!/bin/bash
 set -e
 
-# Find the running container ID for our app (if any)
-container_id=$(docker ps -q --filter ancestor=manasab805/simple-python-flask-app)
+APP_IMAGE="manasab805/simple-python-flask-app"
 
-# Stop and remove the container if it exists
+# Find the running container ID for our app
+container_id=$(docker ps -q --filter ancestor="$APP_IMAGE")
+
 if [ -n "$container_id" ]; then
-    docker rm -f "$container_id"
+    echo "[STOP] Stopping container: $container_id"
+    docker stop "$container_id" || true
+    docker rm "$container_id" || true
+    echo "[STOP] Container stopped and removed."
+else
+    echo "[STOP] No running container found for $APP_IMAGE"
 fi
